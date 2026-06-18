@@ -172,7 +172,7 @@ export default function UploadPage() {
               <div className="flex-1">
                 <DatePicker
                   selected={selectedDate}
-                  onChange={(date) => setSelectedDate(date)}
+                  onChange={(date: Date | null) => setSelectedDate(date)}
                   dateFormat="dd MMM yyyy"
                   placeholderText="📅 Select date"
                   minDate={new Date()}
@@ -183,7 +183,7 @@ export default function UploadPage() {
               <div className="w-40">
                 <DatePicker
                   selected={selectedTime}
-                  onChange={(date) => setSelectedTime(date)}
+                  onChange={(date: Date | null) => setSelectedDate(date)}
                   showTimeSelect
                   showTimeSelectOnly
                   timeIntervals={15}
