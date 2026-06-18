@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -30,9 +31,12 @@ export default function Home() {
             </a>
           </div>
 
-          <button className="rounded-xl bg-white px-5 py-3 font-semibold text-black transition hover:opacity-90">
-            Login with TikTok
-          </button>
+          <Link
+  href="/login"
+  className="rounded-xl bg-white px-5 py-3 font-semibold text-black transition hover:opacity-90"
+>
+  Login
+</Link>
         </nav>
 
         {/* Hero */}
@@ -67,9 +71,12 @@ export default function Home() {
           </p>
 
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-            <button className="rounded-xl bg-white px-8 py-4 text-lg font-semibold text-black transition hover:opacity-90">
-              Login with TikTok
-            </button>
+            <Link
+  href="/register"
+  className="rounded-xl bg-white px-8 py-4 text-lg font-semibold text-black transition hover:opacity-90"
+>
+  Get Started
+</Link>
 
             <button className="rounded-xl border border-zinc-700 px-8 py-4 text-lg transition hover:bg-zinc-900">
               Watch Demo
