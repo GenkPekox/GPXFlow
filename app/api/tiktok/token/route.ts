@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
   );
 
   const data = await response.json();
+  console.log("TOKENS FROM TIKTOK:", data);
 
   // DEBUG (lihat response TikTok)
   console.log("TikTok response:", data);
