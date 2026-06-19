@@ -128,7 +128,12 @@ useEffect(() => {
   </p>
 
 </div>
-<button className="mt-5 rounded-2xl bg-cyan-600 px-6 py-3 font-semibold text-white transition hover:bg-cyan-500">
+<button
+  onClick={() => {
+    window.location.href = "/api/tiktok/login";
+  }}
+  className="mt-5 rounded-2xl bg-cyan-600 px-6 py-3 font-semibold text-white transition hover:bg-cyan-500"
+>
   Connect TikTok Account
 </button>
 
