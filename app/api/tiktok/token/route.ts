@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
 export async function POST(req: NextRequest) {
-  const { code } = await req.json();
+  const { code, userId } = await req.json();
 
   // 1. Exchange code → access_token
   const response = await fetch(
@@ -24,14 +24,13 @@ export async function POST(req: NextRequest) {
   );
 
   const data = await response.json();
-  console.log("TOKENS FROM TIKTOK:", data);
 
-  // DEBUG (lihat response TikTok)
+  console.log("TOKENS FROM TIKTOK:", data);
   console.log("TikTok response:", data);
 
-  // 2. SIMPAN KE SUPABASE (mode simple: update 1 row pertama)
+  // 2. Simpan token ke Supabase
   if (data.access_token) {
-    await supabaseAdmin
+    await supabaseAdmin!
       .from("profiles")
       .update({
         tiktok_access_token: data.access_token,
@@ -39,9 +38,9 @@ export async function POST(req: NextRequest) {
         tiktok_open_id: data.open_id,
         tiktok_connected: true,
       })
-      .eq("id", (await supabaseAdmin.from("profiles").select("id").limit(1).single()).data?.id);
+      .eq("id", userId);
   }
 
-  // 3. RETURN KE FRONTEND
+  // 3. Return ke frontend
   return NextResponse.json(data);
 }

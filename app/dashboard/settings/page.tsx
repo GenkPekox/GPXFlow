@@ -9,6 +9,9 @@ const [fullName, setFullName] = useState("");
 const [autoPublish, setAutoPublish] = useState(false);
 const [emailNotifications, setEmailNotifications] = useState(false);
 
+const [tiktokConnected, setTiktokConnected] =
+  useState(false);
+
 useEffect(() => {
   async function loadUser() {
     const {
@@ -20,10 +23,16 @@ useEffect(() => {
     setEmail(session.user.email || "");
 
     const { data: profile } = await supabase
-      .from("profiles")
-      .select("full_name")
-      .eq("id", session.user.id)
-      .single();
+  .from("profiles")
+  .select("full_name, tiktok_connected")
+  .eq("id", session.user.id)
+  .single();
+
+if (profile) {
+  console.log(profile);
+  setFullName(profile.full_name || "");
+  setTiktokConnected(profile.tiktok_connected || false);
+}
 
     if (profile) {
       setFullName(profile.full_name || "");
@@ -117,15 +126,25 @@ useEffect(() => {
 
     <div className="h-3 w-3 rounded-full bg-yellow-400"></div>
 
-    <span className="font-medium text-yellow-400">
-      Not Connected
-    </span>
+    <span
+  className={`font-medium ${
+    tiktokConnected
+      ? "text-green-400"
+      : "text-yellow-400"
+  }`}
+>
+  {tiktokConnected
+    ? "Connected"
+    : "Not Connected"}
+</span>
 
   </div>
 
   <p className="mt-2 text-sm text-zinc-400">
-    No TikTok account is currently connected to GPXFlow.
-  </p>
+  {tiktokConnected
+    ? "Your TikTok account is connected and ready for publishing."
+    : "No TikTok account is currently connected to GPXFlow."}
+</p>
 
 </div>
 <button
