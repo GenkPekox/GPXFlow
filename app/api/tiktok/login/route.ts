@@ -1,24 +1,49 @@
 import { NextResponse } from "next/server";
+import crypto from "crypto";
 
 export async function GET() {
-const clientKey =
-process.env.TIKTOK_CLIENT_KEY;
+  const clientKey = process.env.TIKTOK_CLIENT_KEY!;
 
-const redirectUri =
-"http://localhost:3000/auth/callback";
+  const redirectUri =
+    "https://gpxflow.vercel.app/auth/callback";
 
-const scope =
-"user.info.basic,video.upload";
+  const scope =
+    "user.info.basic,video.upload";
 
-const authUrl =
-`https://www.tiktok.com/v2/auth/authorize/` +
-`?client_key=${clientKey}` +
-`&scope=${scope}` +
-`&response_type=code` +
-`&redirect_uri=${encodeURIComponent(
+  const codeVerifier = crypto
+    .randomBytes(32)
+    .toString("base64url");
+
+  const codeChallenge = crypto
+    .createHash("sha256")
+    .update(codeVerifier)
+    .digest("base64url");
+
+  const authUrl =
+    `https://www.tiktok.com/v2/auth/authorize/` +
+    `?client_key=${clientKey}` +
+    `&scope=${scope}` +
+    `&response_type=code` +
+    `&redirect_uri=${encodeURIComponent(
       redirectUri
     )}` +
-`&state=gpxflow`;
+    `&state=gpxflow` +
+    `&code_challenge=${codeChallenge}` +
+    `&code_challenge_method=S256`;
 
-return NextResponse.redirect(authUrl);
+  const response =
+    NextResponse.redirect(authUrl);
+
+  response.cookies.set(
+    "tiktok_code_verifier",
+    codeVerifier,
+    {
+      httpOnly: true,
+      secure: false,
+      path: "/",
+      maxAge: 60 * 10,
+    }
+  );
+
+  return response;
 }

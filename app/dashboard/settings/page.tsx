@@ -41,6 +41,54 @@ if (profile) {
 
   loadUser();
 }, []);
+
+async function testTikTokAPI() {
+  try {
+    const response = await fetch(
+      "/api/tiktok/upload",
+      {
+        method: "POST",
+      }
+    );
+
+    const data = await response.json();
+
+    console.log(
+      "TikTok Test Result:",
+      data
+    );
+
+    alert(
+      JSON.stringify(data, null, 2)
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function testTikTokPublish() {
+  try {
+    const response = await fetch(
+      "/api/tiktok/publish",
+      {
+        method: "POST",
+      }
+    );
+
+    const data = await response.json();
+
+    console.log(
+      "TikTok Publish Test:",
+      data
+    );
+
+    alert(
+      JSON.stringify(data, null, 2)
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
   return (
     <>
       <h2 className="text-4xl font-bold">
@@ -154,6 +202,18 @@ if (profile) {
   className="mt-5 rounded-2xl bg-cyan-600 px-6 py-3 font-semibold text-white transition hover:bg-cyan-500"
 >
   Connect TikTok Account
+</button>
+<button
+  onClick={testTikTokAPI}
+  className="mt-3 rounded-2xl bg-green-600 px-6 py-3 font-semibold text-white transition hover:bg-green-500"
+>
+  Test TikTok API
+</button>
+<button
+  onClick={testTikTokPublish}
+  className="mt-3 rounded-2xl bg-purple-600 px-6 py-3 font-semibold text-white transition hover:bg-purple-500"
+>
+  Test Publish Route
 </button>
 
       </div>
