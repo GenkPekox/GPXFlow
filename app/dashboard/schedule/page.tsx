@@ -14,6 +14,8 @@ type ScheduledVideo = {
 export default function SchedulePage() {
   const [videos, setVideos] = useState<ScheduledVideo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState<number | null>(null);
+const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   async function moveToDraft(id: number) {
   const { error } = await supabase
@@ -37,6 +39,7 @@ async function publishNow(id: number) {
     .from("video_url")
     .update({
       status: "published",
+      scheduled_at: new Date().toISOString(),
     })
     .eq("id", id);
 
@@ -49,25 +52,12 @@ async function publishNow(id: number) {
 }
 
 async function editSchedule(id: number) {
-  const newDate = prompt(
-    "Enter new schedule date (YYYY-MM-DD HH:MM)"
-  );
+  const video = videos.find((v) => v.id === id);
 
-  if (!newDate) return;
+  if (!video) return;
 
-  const { error } = await supabase
-    .from("video_url")
-    .update({
-      scheduled_at: new Date(newDate).toISOString(),
-    })
-    .eq("id", id);
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  loadScheduledVideos();
+  setEditingId(id);
+  setSelectedDate(new Date(video.scheduled_at));
 }
 
 async function loadScheduledVideos() {
@@ -131,11 +121,11 @@ async function loadScheduledVideos() {
                   </div>
 
                   <div className="text-sm text-zinc-500">
-                    Scheduled for{" "}
-                    {new Date(
-                      video.scheduled_at
-                    ).toLocaleString()}
-                  </div>
+  Scheduled for{" "}
+  {new Date(
+    video.scheduled_at
+  ).toLocaleString()}
+</div>
 
                   <div className="mt-1 flex gap-4">
                     <a
@@ -153,7 +143,9 @@ async function loadScheduledVideos() {
   }
   className="cursor-pointer text-sm text-yellow-400 hover:text-yellow-300"
 >
-  Edit Schedule
+  {editingId === video.id
+    ? "Editing..."
+    : "Edit Schedule"}
 </button>
 
 <button
@@ -173,6 +165,8 @@ async function loadScheduledVideos() {
 >
   Move to Draft
 </button>
+
+
                   </div>
                 </div>
 

@@ -42,17 +42,31 @@ async function moveToSchedule(id: number) {
 }
 
 async function publishNow(id: number) {
-  const { error } = await supabase
-    .from("video_url")
-    .update({
-      status: "published",
-    })
-    .eq("id", id);
+  const response = await fetch(
+    "/api/tiktok/publish",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        videoId: id,
+      }),
+    }
+  );
 
-  if (error) {
-    alert(error.message);
+  const result =
+    await response.json();
+
+  console.log(result);
+
+  if (!result.success) {
+    alert("Publish failed");
     return;
   }
+
+  alert("Video sent to TikTok");
 
   loadVideos();
 }

@@ -1,4 +1,38 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+
 export default function Dashboard() {
+  const [scheduledCount, setScheduledCount] = useState(0);
+const [draftCount, setDraftCount] = useState(0);
+const [publishedCount, setPublishedCount] = useState(0);
+
+useEffect(() => {
+  fetchCounts();
+}, []);
+
+async function fetchCounts() {
+  const { count: scheduled } = await supabase
+    .from("video_url")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "scheduled");
+
+  const { count: draft } = await supabase
+    .from("video_url")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "draft");
+
+  const { count: published } = await supabase
+    .from("video_url")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "published");
+
+  setScheduledCount(scheduled || 0);
+  setDraftCount(draft || 0);
+  setPublishedCount(published || 0);
+}
+
   return (
     <>
       <h2 className="text-4xl font-bold">
@@ -18,7 +52,7 @@ export default function Dashboard() {
           </div>
 
           <div className="mt-3 text-4xl font-bold">
-            24
+            {scheduledCount}
           </div>
         </div>
 
@@ -28,7 +62,7 @@ export default function Dashboard() {
           </div>
 
           <div className="mt-3 text-4xl font-bold">
-            17
+            {draftCount}
           </div>
         </div>
 
@@ -38,7 +72,7 @@ export default function Dashboard() {
           </div>
 
           <div className="mt-3 text-4xl font-bold">
-            132
+            {publishedCount}
           </div>
         </div>
 
